@@ -1,0 +1,28 @@
+//
+//  happyDemo.pch
+//  happyDemo
+//
+//  Created by 刘汉琳 on 2018/8/4.
+//  Copyright © 2018年 刘汉琳. All rights reserved.
+//
+
+#ifndef happyDemo_pch
+#define happyDemo_pch
+
+#import "ViewController.h"
+#import <Masonry/Masonry.h>
+#import <AFNetworking/AFNetworking.h>
+#import <SDWebImage/SDImageCache.h>
+#import "ADShowView.h"
+#import "ShowPrePictureView.h"
+#import "ShowPictureCollectionViewCell.h"
+#import "ShowPictureResModel.h"
+#import "RequestManager.h"
+#import <SDWebImage/SDWebImage-umbrella.h>
+#import "UIImage+extension.h"
+
+//自定义属性
+#define kscreenWidth [UIScreen mainScreen].bounds.size.width
+#define kscreenHeight [UIScreen mainScreen].bounds.size.height
+
+#endif /* happyDemo_pch */
