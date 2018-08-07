@@ -13,6 +13,7 @@
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
+        self.preImageView = [[UIImageView alloc] init];
         self.imageView = [[UIImageView alloc] init];
         [self addSubview:self.imageView];
         [self.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -30,18 +31,17 @@
     return self;
 }
 
-- (void)bindDataWithModel:(id)model indexPath:(NSIndexPath *)indexPath {
+- (void)bindDataWithModel:(id)model needPreRequest:(BOOL)needRequest preModel:(id)preModel{
     ShowPictureItemModel * imageModel = (ShowPictureItemModel *)model;
+
     __weak typeof(self) weakSelf = self;
     
     [self.imageView sd_setImageWithURL:[NSURL URLWithString:imageModel.enclosure] placeholderImage:[UIImage imageNamed:@"defaultImage"] options:SDWebImageAvoidAutoSetImage|SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
         __block UIImage * showImage = nil;
         if (error != nil) {
-            NSLog(@"-------error------");
             [weakSelf.imageView sd_setImageWithURL:[NSURL URLWithString:imageModel.enclosure] placeholderImage:[UIImage imageNamed:@"defaultImage"] options:SDWebImageAvoidAutoSetImage|SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                 if (error != nil) {
                     //
-                    NSLog(@"-------error------2");
 
                 } else {
                     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -69,6 +69,14 @@
         }
 
     }];
+    
+    if (needRequest) {
+        ShowPictureItemModel * preImageModel = (ShowPictureItemModel *)preModel;
+        NSLog(@"--------------aa");
+        [self.preImageView  sd_setImageWithURL:[NSURL URLWithString:preImageModel.enclosure] placeholderImage:[UIImage imageNamed:@"defaultImage"] options:SDWebImageAvoidAutoSetImage|SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+        }];
+
+    }
 }
 
 - (UIImage *)thumbnailWithImageWithoutScale:(UIImage *)image size:(CGSize)asize

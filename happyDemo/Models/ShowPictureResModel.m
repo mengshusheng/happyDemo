@@ -44,10 +44,21 @@
             model.source =  [[[XMLElement elementsForName:@"source"] objectAtIndex:0] stringValue];
             [self.items addObject:model];
         }];
+        [self preRequestImage:self.items];
         
     }
     
     return self;
+}
+
+- (void)preRequestImage:(NSMutableArray *)itemsArray {
+    if (itemsArray.count > 0) {
+        for (ShowPictureItemModel *item in itemsArray) {
+            UIImageView * imageView = [[UIImageView alloc] init];
+            [imageView sd_setImageWithURL:[NSURL URLWithString:item.enclosure] placeholderImage:[UIImage imageNamed:@"defaultImage"] options:SDWebImageAvoidAutoSetImage|SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+            }];
+        }
+    }
 }
 
 @end

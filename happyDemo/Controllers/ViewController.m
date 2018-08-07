@@ -21,13 +21,24 @@
     self.title = @"浏览页";
     self.view.backgroundColor = [UIColor whiteColor];
     [self setupContentView];
-    [[RequestManager sharedInstance] requestRssDataSuccess:^(ShowPictureResModel *resModel) {
-        self.dataModel = resModel;
-        [self.collectionView reloadData];
-    } handleFailure:^(NSError *error) {
-        
-    }];
+//    [[RequestManager sharedInstance] requestRssDataSuccess:^(ShowPictureResModel *resModel) {
+//        self.dataModel = resModel;
+//        [self.collectionView reloadData];
+//    } handleFailure:^(NSError *error) {
+//
+//    }];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestData:)   name:@"SUCCESS" object:nil];
+    
+    
+
     // Do any additional setup after loading the view, typically from a nib.
+}
+
+- (void)requestData:(NSNotification *)notifcation {
+    self.dataModel = [notifcation object];
+    [self.collectionView reloadData];
+
 }
 
 - (void)setupContentView {
@@ -74,8 +85,15 @@
 - (__kindof UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
     ShowPictureCollectionViewCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
-    ShowPictureItemModel *model = _dataModel.items[indexPath.row];    
-    [cell bindDataWithModel:model indexPath:indexPath];
+    ShowPictureItemModel *model = _dataModel.items[indexPath.row];
+    BOOL preRequest = NO;
+    ShowPictureItemModel *preModel = [ShowPictureItemModel new];
+
+    if ([_dataModel.items count] - 10 > indexPath.row) {
+        preRequest = YES;
+        preModel = _dataModel.items[indexPath.row + 10]; //预加载当前后面的第十个
+    }
+    [cell bindDataWithModel:model needPreRequest:preRequest preModel:preModel];
     
     return cell;
 }

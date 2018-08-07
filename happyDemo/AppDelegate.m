@@ -26,6 +26,14 @@
     ADShowView *adView = [[ADShowView alloc] initWithFrame:self.window.bounds];
     [adView show];
     
+    [[RequestManager sharedInstance] requestRssDataSuccess:^(ShowPictureResModel *resModel) {
+        self.dataModel = resModel;
+//        [self.collectionView reloadData];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"SUCCESS" object:self.dataModel];
+    } handleFailure:^(NSError *error) {
+        
+    }];
+    
     // Override point for customization after application launch.
     return YES;
 }

@@ -10,6 +10,8 @@
 
 @interface ShowPictureCollectionViewCell : UICollectionViewCell
 @property (strong, nonatomic)UIImageView *imageView;
-- (void)bindDataWithModel:(id)model indexPath:(NSIndexPath *)indexPath;
+@property (strong, nonatomic)UIImageView *preImageView;
+
+- (void)bindDataWithModel:(id)model needPreRequest:(BOOL)needRequest preModel:(id)preModel;
 
 @end
