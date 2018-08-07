@@ -10,6 +10,6 @@
 
 @interface ShowPictureCollectionViewCell : UICollectionViewCell
 @property (strong, nonatomic)UIImageView *imageView;
-@property (copy, nonatomic)NSString *imageUrl;
+- (void)bindDataWithModel:(id)model indexPath:(NSIndexPath *)indexPath;
 
 @end

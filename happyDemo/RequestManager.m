@@ -50,7 +50,6 @@
     [self.sessionManager GET:@"https://www.nasa.gov/rss/dyn/lg_image_of_the_day.rss" parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSLog(@"--------%@",responseObject);
         NSString *rssString = nil;
         if ([responseObject isKindOfClass:[NSData class]]) {
             rssString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];

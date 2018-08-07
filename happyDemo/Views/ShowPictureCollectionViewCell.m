@@ -26,34 +26,54 @@
         self.imageView.clipsToBounds = YES;
         self.imageView.layer.cornerRadius = self.contentView.bounds.size.width/2;
         self.imageView.layer.masksToBounds = YES;
-
-
-
     }
     return self;
 }
 
-- (void)setImageUrl:(NSString *)imageUrl {
-    [self.imageView sd_setHighlightedImageWithURL:[NSURL URLWithString:imageUrl] options:SDWebImageAvoidAutoSetImage progress:^(NSInteger receivedSize, NSInteger expectedSize) {
-
-    } completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+- (void)bindDataWithModel:(id)model indexPath:(NSIndexPath *)indexPath {
+    ShowPictureItemModel * imageModel = (ShowPictureItemModel *)model;
+    __weak typeof(self) weakSelf = self;
+    
+    [self.imageView sd_setImageWithURL:[NSURL URLWithString:imageModel.enclosure] placeholderImage:[UIImage imageNamed:@"defaultImage"] options:SDWebImageAvoidAutoSetImage|SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
         __block UIImage * showImage = nil;
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            showImage = [self thumbnailWithImageWithoutScale:image size:CGSizeMake(kscreenWidth,kscreenHeight)];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                self.imageView.image = showImage;
+        if (error != nil) {
+            NSLog(@"-------error------");
+            [weakSelf.imageView sd_setImageWithURL:[NSURL URLWithString:imageModel.enclosure] placeholderImage:[UIImage imageNamed:@"defaultImage"] options:SDWebImageAvoidAutoSetImage|SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                if (error != nil) {
+                    //
+                    NSLog(@"-------error------2");
+
+                } else {
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                        showImage = [weakSelf thumbnailWithImageWithoutScale:image size:CGSizeMake(kscreenWidth,kscreenHeight)];
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            weakSelf.imageView.image = showImage;
+                            [weakSelf.imageView setNeedsLayout];
+                            
+                        });
+                    });
+                }
+                
+            }];
+            
+        } else {
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                showImage = [weakSelf thumbnailWithImageWithoutScale:image size:CGSizeMake(kscreenWidth,kscreenHeight)];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    weakSelf.imageView.image = showImage;
+                    [weakSelf.imageView setNeedsLayout];
+                    
+                });
             });
-        });
+
+        }
 
     }];
 }
 
 - (UIImage *)thumbnailWithImageWithoutScale:(UIImage *)image size:(CGSize)asize
 {
-    
-
-     UIImage *newimage;
-
+    UIImage *newimage;
     if (nil == image) {
         newimage = nil;
     } else {

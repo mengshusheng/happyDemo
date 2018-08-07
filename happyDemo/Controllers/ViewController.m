@@ -25,6 +25,7 @@
         self.dataModel = resModel;
         [self.collectionView reloadData];
     } handleFailure:^(NSError *error) {
+        
     }];
     // Do any additional setup after loading the view, typically from a nib.
 }
@@ -73,8 +74,8 @@
 - (__kindof UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
     ShowPictureCollectionViewCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
-    ShowPictureItemModel *model = _dataModel.items[indexPath.row];
-    cell.imageUrl = model.enclosure;
+    ShowPictureItemModel *model = _dataModel.items[indexPath.row];    
+    [cell bindDataWithModel:model indexPath:indexPath];
     
     return cell;
 }
